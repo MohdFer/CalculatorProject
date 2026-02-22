@@ -1,0 +1,23 @@
+trigger:
+- main
+
+pool:
+  name: SelfHostedPool
+
+steps:
+- checkout: self
+
+- script: dir
+  displayName: 'Show files'
+
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'clean test'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: 'target'
+    artifactName: 'drop'
